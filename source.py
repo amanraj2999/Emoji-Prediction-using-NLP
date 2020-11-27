@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[287]:
+# In[1]:
 
 
 get_ipython().system('pip install emoji')
@@ -9,19 +9,19 @@ get_ipython().system('pip install emoji')
 
 # ### Working with emoji package
 
-# In[288]:
+# In[2]:
 
 
 import emoji as emoji
 
 
-# In[289]:
+# In[3]:
 
 
 # emoji.EMOJI_UNICODE --> to see all thr emojis
 
 
-# In[290]:
+# In[4]:
 
 
 emoji_dictionary = {"0": "\u2764\uFE0F",    
@@ -35,13 +35,13 @@ emoji_dictionary = {"0": "\u2764\uFE0F",
                    }
 
 
-# In[291]:
+# In[5]:
 
 
 emoji.emojize(":chestnut:")
 
 
-# In[292]:
+# In[6]:
 
 
 for e in emoji_dictionary.values():           # print all emoji in the list
@@ -50,35 +50,35 @@ for e in emoji_dictionary.values():           # print all emoji in the list
 
 # ### Step2: Processing custom emoji dataset
 
-# In[293]:
+# In[7]:
 
 
 import numpy as np
 import pandas as pd
 
 
-# In[294]:
+# In[8]:
 
 
 train = pd.read_csv('train_emoji.csv',header=None)
 test = pd.read_csv('test_emoji.csv',header=None)
 
 
-# In[295]:
+# In[9]:
 
 
 train.head()
 
 
-# In[296]:
+# In[10]:
 
 
 # Let us print the sentences with emojis 
 data = train.values
-print(data.shape)
+# print(data.shape)
 
 
-# In[297]:
+# In[11]:
 
 
 XT = train[0]
@@ -88,16 +88,16 @@ YT = train[1]
 Yt = test[1]
 
 
-# In[298]:
+# In[12]:
 
 
 for i in range(5):
-    print(XT[i],emoji.emojize(emoji_dictionary[str(YT[i])]))
+    # print(XT[i],emoji.emojize(emoji_dictionary[str(YT[i])]))
 
 
 # ### Step 3: Converting sentences into Embeddings
 
-# In[299]:
+# In[13]:
 
 
 embeddings = {}
@@ -110,22 +110,22 @@ with open('glove.6B.50d.txt',encoding='utf-8') as f:
         embeddings[word] = coeffs
 
 
-# In[300]:
+# In[14]:
 
 
 embeddings["eat"]
 
 
-# In[301]:
+# In[15]:
 
 
 emb_dim = embeddings["eat"].shape[0]
-print(emb_dim)
+# print(emb_dim)
 
 
 # ### Step  4: Converting Sentences into Vector (Embedding layer output)
 
-# In[302]:
+# In[16]:
 
 
 def getOutputEmbeddings(X):
@@ -139,27 +139,27 @@ def getOutputEmbeddings(X):
     return embedding_matrix_output
 
 
-# In[303]:
+# In[17]:
 
 
 emb_XT = getOutputEmbeddings(XT)
 emb_Xt = getOutputEmbeddings(Xt)
 
 
-# In[304]:
+# In[18]:
 
 
-print(emb_XT.shape)
-print(emb_Xt.shape)
+# print(emb_XT.shape)
+# print(emb_Xt.shape)
 
 
-# In[305]:
+# In[19]:
 
 
 from keras.utils import to_categorical
 
 
-# In[306]:
+# In[20]:
 
 
 YT=to_categorical(YT,num_classes=5)
@@ -168,14 +168,14 @@ Yt=to_categorical(Yt,num_classes=5)
 
 # ### Step 5: Define the RNN/LTSM Model
 
-# In[307]:
+# In[21]:
 
 
 from keras.layers import *
 from keras.models import Sequential
 
 
-# In[308]:
+# In[22]:
 
 
 model = Sequential()
@@ -189,7 +189,7 @@ model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accurac
 model.summary()
 
 
-# In[309]:
+# In[23]:
 
 
 from keras.callbacks import EarlyStopping
@@ -201,41 +201,34 @@ earlystop= EarlyStopping(monitor='val_acc',patience=10)
 hist = model.fit(emb_XT,YT,batch_size=32,epochs=100 ,shuffle=True,validation_split=0.1)
 
 
-# In[310]:
+# In[24]:
 
 
 pred = model.predict_classes(emb_Xt)
 
 
-# In[311]:
+# In[25]:
 
 
-print(pred)
+# print(pred)
 
 
-# In[312]:
+# In[26]:
 
 
 model.evaluate(emb_Xt,Yt)
 
 
-# In[313]:
+# In[27]:
 
 
 pred = model.predict_classes(emb_Xt)
 
 
-# In[314]:
+# In[28]:
 
 
 for i in range(30):
     print(' '.join(Xt[i]))
     print(emoji.emojize(emoji_dictionary[str(np.argmax(Yt[i]))]))
     print(emoji.emojize(emoji_dictionary[str(pred[i])]))
-
-
-# In[ ]:
-
-
-
-
