@@ -1,4 +1,4 @@
-# Emoji-Prediction-using-NLP
+## Emoji-Prediction-using-NLP
 #### Steps involved are:
 1. importing / understanding emoji dataset </br>
 2. Processing custom emoji dataset </br>
